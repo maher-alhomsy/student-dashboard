@@ -9,9 +9,11 @@ import {
   Typography,
   InputLabel,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
+import { loginEvent } from "../lib/http";
 import LoginImage from "../assets/image.png";
 import { LoginData, loginScheme } from "../lib/validator";
 
@@ -24,9 +26,13 @@ const LoginPage = () => {
     resolver: zodResolver(loginScheme),
   });
 
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: loginEvent,
+  });
+
   const submitHandler = ({ password, username }: LoginData) => {
-    console.log(username);
-    console.log(password);
+    mutate({ password, username });
   };
 
   return (
@@ -145,11 +151,18 @@ const LoginPage = () => {
               type="submit"
               color="primary"
               variant="contained"
-              onClick={handleSubmit(submitHandler)}
+              disabled={isPending}
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit(submitHandler)}
             >
               Sign In
             </Button>
+
+            {isError && (
+              <p style={{ fontWeight: "bold", color: "red" }}>
+                {error.response.data}
+              </p>
+            )}
           </Box>
         </Grid>
       </Grid>
