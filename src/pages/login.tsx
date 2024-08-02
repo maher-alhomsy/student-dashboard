@@ -9,10 +9,26 @@ import {
   Typography,
   InputLabel,
 } from "@mui/material";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 
 import LoginImage from "../assets/image.png";
+import { LoginData, loginScheme } from "../lib/validator";
 
 const LoginPage = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginData>({
+    resolver: zodResolver(loginScheme),
+  });
+
+  const submitHandler = ({ password, username }: LoginData) => {
+    console.log(username);
+    console.log(password);
+  };
+
   return (
     <Container
       maxWidth="lg"
@@ -78,37 +94,58 @@ const LoginPage = () => {
               Login
             </Typography>
 
-            <Box>
-              <InputLabel sx={{ mb: -1 }} htmlFor="username">
-                Username
-              </InputLabel>
+            <Controller
+              name="username"
+              control={control}
+              render={({ field: { name, onChange, value } }) => (
+                <>
+                  <InputLabel sx={{ mb: -1 }} htmlFor="username">
+                    Username
+                  </InputLabel>
 
-              <TextField
-                fullWidth
-                id="username"
-                name="username"
-                margin="normal"
-              />
-            </Box>
+                  <TextField
+                    fullWidth
+                    name={name}
+                    value={value}
+                    id="username"
+                    margin="normal"
+                    onChange={onChange}
+                    error={Boolean(errors.username)}
+                    helperText={errors.username?.message}
+                  />
+                </>
+              )}
+            />
 
-            <Box>
-              <InputLabel sx={{ mb: -1 }} htmlFor="password">
-                Password
-              </InputLabel>
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { name, value, onChange } }) => (
+                <>
+                  <InputLabel sx={{ mb: -1 }} htmlFor="password">
+                    Password
+                  </InputLabel>
 
-              <TextField
-                fullWidth
-                id="password"
-                name="password"
-                margin="normal"
-              />
-            </Box>
+                  <TextField
+                    fullWidth
+                    name={name}
+                    value={value}
+                    id="password"
+                    margin="normal"
+                    onChange={onChange}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password?.message}
+                  />
+                </>
+              )}
+            />
 
             <Button
               fullWidth
               type="submit"
               color="primary"
               variant="contained"
+              onClick={handleSubmit(submitHandler)}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
