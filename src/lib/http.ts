@@ -1,11 +1,13 @@
 import axios from "axios";
 
 export const loginEvent = async ({
-  username,
+  userName,
   password,
 }: {
-  username: string;
+  userName: string;
   password: string;
 }) => {
-  await axios.post("/User/SignIn", { username, password });
+  const { data } = await axios.post("/User/SignIn", { userName, password });
+
+  return data as { userName: string; token: string };
 };

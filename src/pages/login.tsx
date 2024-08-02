@@ -9,15 +9,20 @@ import {
   Typography,
   InputLabel,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
 import { loginEvent } from "../lib/http";
 import LoginImage from "../assets/image.png";
+import { useSession } from "../hooks/useSession";
 import { LoginData, loginScheme } from "../lib/validator";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { onLogin } = useSession();
+
   const {
     control,
     handleSubmit,
@@ -29,10 +34,14 @@ const LoginPage = () => {
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: ["login"],
     mutationFn: loginEvent,
+    onSuccess: ({ token, userName }) => {
+      onLogin({ token, userName });
+      navigate("dashboard");
+    },
   });
 
-  const submitHandler = ({ password, username }: LoginData) => {
-    mutate({ password, username });
+  const submitHandler = ({ password, userName }: LoginData) => {
+    mutate({ password, userName });
   };
 
   return (
@@ -101,23 +110,21 @@ const LoginPage = () => {
             </Typography>
 
             <Controller
-              name="username"
+              name="userName"
               control={control}
               render={({ field: { name, onChange, value } }) => (
                 <>
-                  <InputLabel sx={{ mb: -1 }} htmlFor="username">
-                    Username
-                  </InputLabel>
+                  <InputLabel htmlFor="username">Username</InputLabel>
 
                   <TextField
                     fullWidth
                     name={name}
                     value={value}
                     id="username"
-                    margin="normal"
+                    sx={{ mb: 3 }}
                     onChange={onChange}
-                    error={Boolean(errors.username)}
-                    helperText={errors.username?.message}
+                    error={Boolean(errors.userName)}
+                    helperText={errors.userName?.message}
                   />
                 </>
               )}
@@ -128,16 +135,14 @@ const LoginPage = () => {
               name="password"
               render={({ field: { name, value, onChange } }) => (
                 <>
-                  <InputLabel sx={{ mb: -1 }} htmlFor="password">
-                    Password
-                  </InputLabel>
+                  <InputLabel htmlFor="password">Password</InputLabel>
 
                   <TextField
                     fullWidth
                     name={name}
                     value={value}
                     id="password"
-                    margin="normal"
+                    sx={{ mb: 1 }}
                     onChange={onChange}
                     error={Boolean(errors.password)}
                     helperText={errors.password?.message}
