@@ -5,6 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useQuery } from "@tanstack/react-query";
 
 import { getStudents } from "../lib/http";
+import Navbar from "../components/Navbar";
 import { TransformedStudent } from "../types";
 import { useSession } from "../hooks/useSession";
 
@@ -69,6 +70,7 @@ const DashboardPage = () => {
 
   return (
     <div style={{ height: 400, width: "100%" }}>
+      <Navbar />
       <DataGrid loading={isLoading} rows={row} columns={columns} />
     </div>
   );
