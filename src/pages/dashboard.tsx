@@ -8,6 +8,7 @@ import { getStudents } from "../lib/http";
 import Navbar from "../components/Navbar";
 import { TransformedStudent } from "../types";
 import { useSession } from "../hooks/useSession";
+import Menubar from "../components/Menubar";
 
 const DashboardPage = () => {
   const { token } = useSession();
@@ -69,9 +70,12 @@ const DashboardPage = () => {
   }, [data]);
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div style={{ width: "100%", height: "90vh" }}>
       <Navbar />
-      <DataGrid loading={isLoading} rows={row} columns={columns} />
+      <div style={{ display: "flex", height: "100%" }}>
+        <Menubar />
+        <DataGrid loading={isLoading} rows={row} columns={columns} />
+      </div>
     </div>
   );
 };
