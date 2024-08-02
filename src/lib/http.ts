@@ -22,3 +22,18 @@ export const getStudents = async (token: string) => {
 
   return data as Student[];
 };
+
+export const deleteStudent = async ({
+  id,
+  token,
+}: {
+  id: string;
+  token: string;
+}) => {
+  const { data } = await axios.delete(`/Student/Remove?Id=${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};

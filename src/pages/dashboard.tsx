@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-import { getStudents } from "../lib/http";
+import { deleteStudent, getStudents } from "../lib/http";
 import Navbar from "../components/Navbar";
+import Menubar from "../components/Menubar";
 import { TransformedStudent } from "../types";
 import { useSession } from "../hooks/useSession";
-import Menubar from "../components/Menubar";
+import { queryClient } from "../main";
 
 const DashboardPage = () => {
   const { token } = useSession();
@@ -18,6 +20,14 @@ const DashboardPage = () => {
     queryKey: ["get-students"],
     queryFn: () => getStudents(token!),
     enabled: token !== null,
+  });
+
+  const { mutate } = useMutation({
+    mutationKey: ["delete-student"],
+    mutationFn: deleteStudent,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["get-students"] });
+    },
   });
 
   const columns = [
@@ -34,10 +44,15 @@ const DashboardPage = () => {
       field: "actions",
       headerName: "Actions",
       width: 150,
-      renderCell: () => (
+      renderCell: ({ id }: TransformedStudent) => (
         <div>
-          <Button color="primary" variant="contained">
-            Edit
+          <Button
+            color="error"
+            onClick={() => {
+              mutate({ id, token: token! });
+            }}
+          >
+            <DeleteIcon />
           </Button>
         </div>
       ),
