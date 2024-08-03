@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@mui/material";
-import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 
 import MainModal from "./MainModal";
 import { queryClient } from "../main";
@@ -15,7 +15,6 @@ import { deleteStudent, getStudents } from "../lib/http";
 const StudentsTable = () => {
   const { token } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const [row, setRow] = useState<TransformedStudent[]>([]);
   const [editStudent, setEditStudent] = useState<TransformedStudent | null>(
     null
   );
@@ -72,38 +71,27 @@ const StudentsTable = () => {
     },
   ];
 
-  useEffect(() => {
-    if (!data) return;
-
-    const rows: TransformedStudent[] = [];
-
-    data.forEach((item) => {
-      const row = {
-        id: item.id,
-        firstName: item.firstName,
-        lastName: item.lastName,
-        dateOfBirth: item.birthDate,
-        educationalLevel: item.grade.translations[0].name,
-        gender: item.gender.translations[1].name,
-        country: item.country,
-        city: item.city,
-        mobileNumber: item.phone,
-        notes: item.remarks,
-      };
-
-      rows.push(row);
-    });
-
-    setRow(rows);
-  }, [data]);
-
   const toggleModalHandler = () => {
     setIsOpen((prev) => !prev);
   };
 
   return (
     <>
-      <DataGrid loading={isLoading} rows={row} columns={columns} />
+      <DataGrid
+        columns={columns}
+        loading={isLoading}
+        rows={
+          data?.map((item) => ({
+            ...item,
+            notes: item.remarks,
+            mobileNumber: item.phone,
+            dateOfBirth: item.birthDate,
+            gender: item.gender.translations[1].name,
+            educationalLevel: item.grade.translations[0].name,
+          })) || []
+        }
+      />
+
       <MainModal
         type="EDIT"
         isOpen={isOpen}
