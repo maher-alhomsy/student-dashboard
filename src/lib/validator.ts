@@ -19,4 +19,4 @@ export const studentScheme = z.object({
   remarks: z.string().optional(),
 });
 
-export type Student = z.infer<typeof studentScheme>;
+export type StudentSchemeData = z.infer<typeof studentScheme>;

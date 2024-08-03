@@ -26,20 +26,20 @@ export type Grade = {
   translations: Translation[];
 };
 
-export type TransformedStudent = {
-  id: string;
+export type AddStudentEvent = {
   city: string;
-  notes: string;
+  grade: string;
+  phone: string;
   gender: string;
   country: string;
+  remarks?: string;
   lastName: string;
   firstName: string;
-  dateOfBirth: string;
-  mobileNumber: string;
-  educationalLevel: string;
+  birthDate: string;
 };
 
-export type AddStudentEvent = {
+export type EditStudentEvent = {
+  id: string;
   city: string;
   grade: string;
   phone: string;

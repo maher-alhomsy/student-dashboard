@@ -1,6 +1,12 @@
 import axios from "axios";
 
-import { AddStudentEvent, Gender, Grade, Student } from "../types";
+import {
+  Grade,
+  Gender,
+  Student,
+  AddStudentEvent,
+  EditStudentEvent,
+} from "../types";
 
 export const loginEvent = async ({
   userName,
@@ -67,6 +73,22 @@ export const addStudent = async ({
   student: AddStudentEvent;
 }) => {
   const { data } = await axios.post("/Student/Add", student, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+};
+
+export const EditStudent = async ({
+  token,
+  student,
+}: {
+  token: string;
+  student: EditStudentEvent;
+}) => {
+  const { data } = await axios.put("/Student/Edit", student, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

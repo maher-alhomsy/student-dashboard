@@ -14,16 +14,16 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { queryClient } from "../main";
-import { addStudent } from "../lib/http";
 import { useSession } from "../hooks/useSession";
-import { studentScheme, Student } from "../lib/validator";
-import { Gender, Grade, TransformedStudent } from "../types";
+import { addStudent, EditStudent } from "../lib/http";
+import { Gender, Grade, Student as S } from "../types";
+import { studentScheme, StudentSchemeData } from "../lib/validator";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   type: "EDIT" | "CREATE";
-  student?: TransformedStudent;
+  student?: S;
 };
 
 const INITIAL_VALUE = {
@@ -48,21 +48,20 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Student>({
+  } = useForm<StudentSchemeData>({
     resolver: zodResolver(studentScheme),
     values:
       type === "EDIT" && student
         ? {
             ...student,
-            remarks: student.notes,
-            phone: student.mobileNumber,
-            grade: student.educationalLevel,
-            birthDate: student.dateOfBirth.slice(0, 10),
+            grade: student.grade.id,
+            gender: student.gender.id,
+            birthDate: student.birthDate.slice(0, 10),
           }
         : INITIAL_VALUE,
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: addMutate, isPending } = useMutation({
     mutationKey: ["add-student"],
     mutationFn: addStudent,
     onSuccess: async () => {
@@ -71,8 +70,21 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
     },
   });
 
-  const submitHandler = (values: Student) => {
-    mutate({ student: values, token: token! });
+  const { mutate: editMutate, isPending: isEditPending } = useMutation({
+    mutationKey: ["edit-student"],
+    mutationFn: EditStudent,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["get-students"] });
+      onClose();
+    },
+  });
+
+  const submitHandler = (values: StudentSchemeData) => {
+    if (type === "CREATE") {
+      addMutate({ student: values, token: token! });
+    } else {
+      editMutate({ student: { id: student!.id, ...values }, token: token! });
+    }
   };
 
   return (
@@ -280,7 +292,7 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             type="submit"
             color="primary"
             variant="contained"
-            disabled={isPending}
+            disabled={isPending || isEditPending}
             onClick={handleSubmit(submitHandler)}
             sx={{ borderRadius: 3, textTransform: "none" }}
           >
@@ -292,7 +304,7 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             color="primary"
             variant="outlined"
             onClick={onClose}
-            disabled={isPending}
+            disabled={isPending || isEditPending}
             sx={{ borderRadius: 3, textTransform: "none" }}
           >
             Cancel
