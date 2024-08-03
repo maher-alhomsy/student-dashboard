@@ -106,9 +106,6 @@ const StudentsTable = () => {
 
           "& .MuiDataGrid-columnHeader svg": {
             color: "white",
-            // fontWeight: "bold",
-            // fontSize: "20px",
-            // backgroundColor: "#1F7BF4",
           },
         }}
       />
