@@ -53,8 +53,8 @@ const FilterSection = () => {
                 <SearchIcon />
               </InputAdornment>
             ),
+            style: { borderRadius: 20, backgroundColor: "#F5F5F5", width: 300 },
           }}
-          sx={{ backgroundColor: "#F5F5F5", width: 300 }}
           placeholder="Search by first name, last name"
         />
       </Box>
