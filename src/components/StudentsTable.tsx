@@ -11,16 +11,18 @@ import MainModal from "./MainModal";
 import DeleteModal from "./DeleteModal";
 import type { TableRow } from "../types";
 import { getStudents } from "../lib/http";
-import { useSession } from "../hooks/useSession";
+import { useLanguage, useSession } from "../hooks/useSession";
 
 const StudentsTable = () => {
   const navigate = useNavigate();
-  const { token } = useSession();
   const { search } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editStudent, setEditStudent] = useState<TableRow | null>(null);
   const [filteredRows, setFilteredRows] = useState<TableRow[] | null>(null);
+
+  const { token } = useSession();
+  const { language } = useLanguage();
 
   const params = new URLSearchParams(search);
 
@@ -89,8 +91,10 @@ const StudentsTable = () => {
       ...row,
       gradeId: row.grade.id,
       genderId: row.gender.id,
-      grade: row.grade.translations[0].name,
-      gender: row.gender.translations[0].name,
+      grade: row.grade.translations.find((i) => i.cultureCode === language)!
+        .name,
+      gender: row.gender.translations.find((i) => i.cultureCode === language)!
+        .name,
     }));
   }
 
