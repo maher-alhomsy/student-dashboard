@@ -13,8 +13,8 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { queryClient } from "../main";
-import { Grade, TransformedStudent } from "../types";
 import { studentScheme, Student } from "../lib/validator";
+import { Gender, Grade, TransformedStudent } from "../types";
 
 type Props = {
   isOpen: boolean;
@@ -37,6 +37,7 @@ const INITIAL_VALUE = {
 
 const MainModal = ({ isOpen, onClose, type, student }: Props) => {
   const grades = queryClient.getQueryData<Grade[]>(["all-grades"]);
+  const genders = queryClient.getQueryData<Gender[]>(["all-genders"]);
 
   const {
     control,
@@ -230,8 +231,12 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
                   sx={{ background: "#F5F5F5" }}
                   error={Boolean(errors.gender)}
                 >
-                  <MenuItem value="Female">Female</MenuItem>
-                  <MenuItem value="Male">Male</MenuItem>
+                  {genders &&
+                    genders.map(({ id, translations }) => (
+                      <MenuItem key={id} value={id}>
+                        {translations[0].name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             )}

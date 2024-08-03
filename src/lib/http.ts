@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Grade, Student } from "../types";
+import { Gender, Grade, Student } from "../types";
 
 export const loginEvent = async ({
   userName,
@@ -46,4 +46,14 @@ export const getAllGrades = async (token: string) => {
   });
 
   return data as Grade[];
+};
+
+export const getAllGenders = async (token: string) => {
+  const { data } = await axios.get("/Settings/GetAllGenders", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data as Gender[];
 };

@@ -11,7 +11,7 @@ export type Student = {
   birthDate: string;
 };
 
-type Gender = {
+export type Gender = {
   id: string;
   translations: Translation[];
 };

@@ -2,11 +2,11 @@ import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
 import Navbar from "../components/Navbar";
-import { getAllGrades } from "../lib/http";
 import Menubar from "../components/Menubar";
 import { useSession } from "../hooks/useSession";
 import StudentsTable from "../components/StudentsTable";
 import FilterSection from "../components/FilterSection";
+import { getAllGenders, getAllGrades } from "../lib/http";
 
 const DashboardPage = () => {
   const { token } = useSession();
@@ -14,6 +14,12 @@ const DashboardPage = () => {
   useQuery({
     queryKey: ["all-grades"],
     queryFn: () => getAllGrades(token!),
+    enabled: token !== null,
+  });
+
+  useQuery({
+    queryKey: ["all-genders"],
+    queryFn: () => getAllGenders(token!),
     enabled: token !== null,
   });
 
