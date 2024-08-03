@@ -6,8 +6,11 @@ import { MenuItem, Select, Avatar } from "@mui/material";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 
 import avatarImage from "../assets/avatar.jpeg";
+import { useLanguage } from "../hooks/useSession";
 
 function Navbar() {
+  const { language, onChangeLanguage } = useLanguage();
+
   return (
     <AppBar
       position="static"
@@ -71,11 +74,12 @@ function Navbar() {
           <Avatar src={avatarImage} />
 
           <Select
-            defaultValue="en"
+            value={language}
             sx={{ borderRadius: 10, width: 150, textAlign: "center" }}
+            onChange={(e) => onChangeLanguage(e.target.value as 0 | 1)}
           >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="ar">Arabic</MenuItem>
+            <MenuItem value={0}>English</MenuItem>
+            <MenuItem value={1}>Arabic</MenuItem>
           </Select>
         </Box>
       </Toolbar>

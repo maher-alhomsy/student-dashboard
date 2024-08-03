@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { queryClient } from "../main";
-import { useSession } from "../hooks/useSession";
+import { useLanguage, useSession } from "../hooks/useSession";
 import { addStudent, EditStudent } from "../lib/http";
 import type { Gender, Grade, TableRow } from "../types";
 import { studentScheme, StudentSchemeData } from "../lib/validator";
@@ -40,6 +40,7 @@ const INITIAL_VALUE = {
 
 const MainModal = ({ isOpen, onClose, type, student }: Props) => {
   const { token } = useSession();
+  const { language } = useLanguage();
 
   const grades = queryClient.getQueryData<Grade[]>(["all-grades"]);
   const genders = queryClient.getQueryData<Gender[]>(["all-genders"]);
@@ -176,11 +177,17 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
                   sx={{ backgroundColor: "#F5F5F5" }}
                 >
                   {grades &&
-                    grades.map(({ id, translations }) => (
-                      <MenuItem key={id} value={id}>
-                        {translations[0].name}
-                      </MenuItem>
-                    ))}
+                    grades.map(({ id, translations }) => {
+                      return (
+                        <MenuItem key={id} value={id}>
+                          {
+                            translations.find(
+                              (i) => i.cultureCode === language
+                            )!.name
+                          }
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             )}
@@ -258,11 +265,17 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
                   error={Boolean(errors.gender)}
                 >
                   {genders &&
-                    genders.map(({ id, translations }) => (
-                      <MenuItem key={id} value={id}>
-                        {translations[0].name}
-                      </MenuItem>
-                    ))}
+                    genders.map(({ id, translations }) => {
+                      return (
+                        <MenuItem key={id} value={id}>
+                          {
+                            translations.find(
+                              (i) => i.cultureCode === language
+                            )!.name
+                          }
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             )}

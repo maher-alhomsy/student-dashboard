@@ -16,12 +16,14 @@ import { Controller, useForm } from "react-hook-form";
 
 import { loginEvent } from "../lib/http";
 import LoginImage from "../assets/image.png";
-import { useSession } from "../hooks/useSession";
 import { LoginData, loginScheme } from "../lib/validator";
+import { useLanguage, useSession } from "../hooks/useSession";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { onLogin } = useSession();
+
+  const { language, onChangeLanguage } = useLanguage();
 
   const {
     control,
@@ -67,9 +69,13 @@ const LoginPage = () => {
           xs={12}
           sx={{ display: "flex", flexDirection: "column" }}
         >
-          <Select defaultValue="en" sx={{ maxWidth: "100px", mt: 3 }}>
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="ar">Arabic</MenuItem>
+          <Select
+            value={language}
+            sx={{ borderRadius: 10, width: 150, textAlign: "center" }}
+            onChange={(e) => onChangeLanguage(e.target.value as 0 | 1)}
+          >
+            <MenuItem value={0}>English</MenuItem>
+            <MenuItem value={1}>Arabic</MenuItem>
           </Select>
 
           <Box
