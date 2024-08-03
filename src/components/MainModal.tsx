@@ -41,14 +41,14 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
     formState: { errors },
   } = useForm<Student>({
     resolver: zodResolver(studentScheme),
-    defaultValues:
-      type === "EDIT"
+    values:
+      type === "EDIT" && student
         ? {
             ...student,
-            remarks: student?.notes,
-            phone: student?.mobileNumber,
-            grade: student?.educationalLevel,
-            birthDate: student?.dateOfBirth.slice(0, 10),
+            remarks: student.notes,
+            phone: student.mobileNumber,
+            grade: student.educationalLevel,
+            birthDate: student.dateOfBirth.slice(0, 10),
           }
         : INITIAL_VALUE,
   });
@@ -83,16 +83,13 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             name="firstName"
             render={({ field }) => (
               <TextField
-                fullWidth
                 {...field}
+                fullWidth
                 id="firstName"
                 margin="normal"
                 label="First Name"
                 error={Boolean(errors.firstName)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={
-                  type === "EDIT" ? student?.firstName : field.value
-                }
               />
             )}
           />
@@ -102,14 +99,13 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             name="lastName"
             render={({ field }) => (
               <TextField
-                fullWidth
                 {...field}
+                fullWidth
                 id="lastName"
                 margin="normal"
                 label="Last Name"
                 error={Boolean(errors.lastName)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={type === "EDIT" ? student?.lastName : field.value}
               />
             )}
           />
@@ -121,8 +117,8 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             name="birthDate"
             render={({ field }) => (
               <TextField
-                fullWidth
                 {...field}
+                fullWidth
                 type="date"
                 margin="normal"
                 id="dateOfBirth"
@@ -130,11 +126,6 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
                 error={Boolean(errors.birthDate)}
                 InputLabelProps={{ shrink: true }}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={
-                  type === "CREATE"
-                    ? field.value
-                    : student?.dateOfBirth.slice(0, 10)
-                }
               />
             )}
           />
@@ -153,9 +144,6 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
                   labelId="educational-label"
                   error={Boolean(errors.grade)}
                   sx={{ backgroundColor: "#F5F5F5" }}
-                  defaultValue={
-                    type === "EDIT" ? student?.educationalLevel : field.value
-                  }
                 >
                   <MenuItem value="Grade 1">Grade 1</MenuItem>
                   <MenuItem value="Grade 9">Grade 9</MenuItem>
@@ -181,9 +169,6 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
                   labelId="country-label"
                   error={Boolean(errors.country)}
                   sx={{ backgroundColor: "#F5F5F5" }}
-                  defaultValue={
-                    type === "EDIT" ? student?.country : field.value
-                  }
                 >
                   <MenuItem value="USA">USA</MenuItem>
                   <MenuItem value="Syria">Syria</MenuItem>
@@ -199,14 +184,13 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             name="city"
             render={({ field }) => (
               <TextField
+                {...field}
                 fullWidth
                 id="city"
-                {...field}
                 label="City"
                 margin="normal"
                 error={Boolean(errors.city)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={type === "EDIT" ? student?.city : field.value}
               />
             )}
           />
@@ -218,16 +202,13 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             name="phone"
             render={({ field }) => (
               <TextField
+                {...field}
                 fullWidth
                 id="phone"
-                {...field}
                 label="Mobile"
                 margin="normal"
                 error={Boolean(errors.phone)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={
-                  type === "EDIT" ? student?.mobileNumber : field.value
-                }
               />
             )}
           />
@@ -239,12 +220,11 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
               <FormControl fullWidth margin="normal">
                 <InputLabel id="gender-label">Gender</InputLabel>
                 <Select
-                  id="gender"
                   {...field}
+                  id="gender"
                   labelId="gender-label"
                   sx={{ background: "#F5F5F5" }}
                   error={Boolean(errors.gender)}
-                  defaultValue={type === "EDIT" ? student?.gender : field.value}
                 >
                   <MenuItem value="Female">Female</MenuItem>
                   <MenuItem value="Male">Male</MenuItem>
@@ -259,14 +239,13 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           name="remarks"
           render={({ field }) => (
             <TextField
+              {...field}
               fullWidth
               multiline
               id="note"
-              {...field}
               label="Note"
               margin="normal"
               sx={{ backgroundColor: "#F5F5F5" }}
-              defaultValue={type === "EDIT" ? student?.notes : field.value}
               inputProps={{ style: { height: 100, textAlign: "start" } }}
             />
           )}
