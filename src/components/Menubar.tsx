@@ -1,43 +1,67 @@
-import { Box, Container, Typography } from "@mui/material";
+import { useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { Box, Container, Typography } from "@mui/material";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
-import { useSession } from "../hooks/useSession";
+import SignoutModal from "./SignoutModal";
 
 const Menubar = () => {
-  const navigate = useNavigate();
-  const { onLogout } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const logoutHandler = () => {
-    onLogout();
-    navigate("/");
+  const closeModalHandler = () => {
+    setIsOpen(false);
   };
 
   return (
-    <Container
-      sx={{
-        width: 250,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-      style={{ paddingLeft: 0, paddingRight: 0 }}
-    >
-      <Box flex={1}>
+    <>
+      <Container
+        sx={{
+          width: 250,
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        style={{ paddingLeft: 0, paddingRight: 0 }}
+      >
+        <Box flex={1}>
+          <Box
+            display="flex"
+            alignItems="center"
+            borderLeft="4px solid #1F7BF4"
+            gap={1}
+            pl={2}
+          >
+            <AutoStoriesIcon color="action" sx={{ display: "flex" }} />
+
+            <Typography
+              noWrap
+              variant="h6"
+              sx={{
+                color: "black",
+                fontWeight: 700,
+                textDecoration: "none",
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              Student's Data
+            </Typography>
+          </Box>
+        </Box>
+
         <Box
+          pl={3}
+          mb={2}
+          gap={1}
           display="flex"
           alignItems="center"
-          borderLeft="4px solid #1F7BF4"
-          gap={1}
-          pl={2}
+          sx={{ cursor: "pointer" }}
+          onClick={() => setIsOpen(true)}
         >
-          <AutoStoriesIcon color="action" sx={{ display: "flex" }} />
+          <PowerSettingsNewIcon color="action" sx={{ display: "flex" }} />
 
           <Typography
             noWrap
-            variant="h6"
             sx={{
               color: "black",
               fontWeight: 700,
@@ -45,35 +69,13 @@ const Menubar = () => {
               display: { xs: "none", md: "flex" },
             }}
           >
-            Student's Data
+            Logout
           </Typography>
         </Box>
-      </Box>
+      </Container>
 
-      <Box
-        pl={3}
-        mb={2}
-        gap={1}
-        display="flex"
-        alignItems="center"
-        onClick={logoutHandler}
-        sx={{ cursor: "pointer" }}
-      >
-        <PowerSettingsNewIcon color="action" sx={{ display: "flex" }} />
-
-        <Typography
-          noWrap
-          sx={{
-            color: "black",
-            fontWeight: 700,
-            textDecoration: "none",
-            display: { xs: "none", md: "flex" },
-          }}
-        >
-          Logout
-        </Typography>
-      </Box>
-    </Container>
+      <SignoutModal onClose={closeModalHandler} isOpen={isOpen} />
+    </>
   );
 };
 
