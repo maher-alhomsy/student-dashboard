@@ -29,6 +29,7 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<LoginData>({
     resolver: zodResolver(loginScheme),
+    values: { password: "", userName: "" },
   });
 
   const { mutate, isPending, isError, error } = useMutation({
