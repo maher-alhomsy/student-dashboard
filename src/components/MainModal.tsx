@@ -43,7 +43,7 @@ const INITIAL_VALUE = {
 const MainModal = ({ isOpen, onClose, type, student }: Props) => {
   const { token } = useSession();
   const { language } = useLanguage();
-  const [isActionSuccess, setIsActionSuccess] = useState(false);
+  const [isActionComplete, setIsActionComplete] = useState(false);
 
   const grades = queryClient.getQueryData<Grade[]>(["all-grades"]);
   const genders = queryClient.getQueryData<Gender[]>(["all-genders"]);
@@ -65,23 +65,35 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
         : INITIAL_VALUE,
   });
 
-  const { isPending, mutate: addMutate } = useMutation({
+  const {
+    isPending,
+    mutate: addMutate,
+    isError: IsAddError,
+  } = useMutation({
     mutationKey: ["add-student"],
     mutationFn: addStudent,
     onSuccess: async () => {
-      setIsActionSuccess(true);
       await queryClient.invalidateQueries({ queryKey: ["get-students"] });
       onClose();
+      setIsActionComplete(true);
+    },
+    onError: () => {
+      onClose();
+      setIsActionComplete(true);
     },
   });
 
-  const { mutate: editMutate, isPending: isEditPending } = useMutation({
+  const {
+    mutate: editMutate,
+    isError: isEditError,
+    isPending: isEditPending,
+  } = useMutation({
     mutationKey: ["edit-student"],
     mutationFn: EditStudent,
     onSuccess: async () => {
-      setIsActionSuccess(true);
       await queryClient.invalidateQueries({ queryKey: ["get-students"] });
       onClose();
+      setIsActionComplete(true);
     },
   });
 
@@ -94,7 +106,7 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
   };
 
   const dismisHandler = () => {
-    setIsActionSuccess(false);
+    setIsActionComplete(false);
   };
 
   return (
@@ -339,10 +351,14 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
       <Snackbar
         message={
           type === "CREATE"
-            ? "Add Student Successfully!"
+            ? IsAddError
+              ? "Add Student Successfully!"
+              : "Some thing went wrong, Please try again."
+            : isEditError
+            ? "Some thing went wrong, Please try again."
             : "Edit Student Successfully!"
         }
-        open={isActionSuccess}
+        open={isActionComplete}
         onClose={dismisHandler}
         autoHideDuration={5000}
       />
