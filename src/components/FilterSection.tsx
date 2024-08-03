@@ -11,12 +11,24 @@ import MainModal from "./MainModal";
 import AddIcon from "@mui/icons-material/Add";
 import TuneIcon from "@mui/icons-material/Tune";
 import SearchIcon from "@mui/icons-material/Search";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const FilterSection = () => {
+  const navigate = useNavigate();
+  const { search } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  const params = new URLSearchParams(search);
 
   const toggleModalHandler = () => {
     setIsOpen((prev) => !prev);
+  };
+
+  const blurHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    params.set("q", e.currentTarget.value);
+    navigate({ search: params.toString() });
   };
 
   return (
@@ -47,6 +59,7 @@ const FilterSection = () => {
         </Typography>
 
         <TextField
+          onBlur={blurHandler}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
