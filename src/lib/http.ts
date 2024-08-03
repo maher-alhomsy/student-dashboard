@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Gender, Grade, Student } from "../types";
+
+import { AddStudentEvent, Gender, Grade, Student } from "../types";
 
 export const loginEvent = async ({
   userName,
@@ -56,4 +57,20 @@ export const getAllGenders = async (token: string) => {
   });
 
   return data as Gender[];
+};
+
+export const addStudent = async ({
+  token,
+  student,
+}: {
+  token: string;
+  student: AddStudentEvent;
+}) => {
+  const { data } = await axios.post("/Student/Add", student, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
 };

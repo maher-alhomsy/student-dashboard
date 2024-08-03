@@ -9,10 +9,13 @@ import {
   FormControl,
   Typography,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { queryClient } from "../main";
+import { addStudent } from "../lib/http";
+import { useSession } from "../hooks/useSession";
 import { studentScheme, Student } from "../lib/validator";
 import { Gender, Grade, TransformedStudent } from "../types";
 
@@ -36,6 +39,8 @@ const INITIAL_VALUE = {
 };
 
 const MainModal = ({ isOpen, onClose, type, student }: Props) => {
+  const { token } = useSession();
+
   const grades = queryClient.getQueryData<Grade[]>(["all-grades"]);
   const genders = queryClient.getQueryData<Gender[]>(["all-genders"]);
 
@@ -57,8 +62,17 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
         : INITIAL_VALUE,
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["add-student"],
+    mutationFn: addStudent,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["get-students"] });
+      onClose();
+    },
+  });
+
   const submitHandler = (values: Student) => {
-    console.log(values);
+    mutate({ student: values, token: token! });
   };
 
   return (
@@ -266,6 +280,7 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             type="submit"
             color="primary"
             variant="contained"
+            disabled={isPending}
             onClick={handleSubmit(submitHandler)}
             sx={{ borderRadius: 3, textTransform: "none" }}
           >
@@ -277,6 +292,7 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
             color="primary"
             variant="outlined"
             onClick={onClose}
+            disabled={isPending}
             sx={{ borderRadius: 3, textTransform: "none" }}
           >
             Cancel

@@ -38,3 +38,15 @@ export type TransformedStudent = {
   mobileNumber: string;
   educationalLevel: string;
 };
+
+export type AddStudentEvent = {
+  city: string;
+  grade: string;
+  phone: string;
+  gender: string;
+  country: string;
+  remarks?: string;
+  lastName: string;
+  firstName: string;
+  birthDate: string;
+};
