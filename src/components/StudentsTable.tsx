@@ -2,36 +2,32 @@ import { useEffect, useState } from "react";
 
 import { Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useLocation } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
+import { useQuery } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import MainModal from "./MainModal";
-import { queryClient } from "../main";
+import DeleteModal from "./DeleteModal";
 import type { TableRow } from "../types";
+import { getStudents } from "../lib/http";
 import { useSession } from "../hooks/useSession";
-import { deleteStudent, getStudents } from "../lib/http";
 
 const StudentsTable = () => {
+  const navigate = useNavigate();
   const { token } = useSession();
   const { search } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editStudent, setEditStudent] = useState<TableRow | null>(null);
   const [filteredRows, setFilteredRows] = useState<TableRow[] | null>(null);
+
+  const params = new URLSearchParams(search);
 
   const { data, isLoading } = useQuery({
     queryKey: ["get-students"],
     queryFn: () => getStudents(token!),
     enabled: token !== null,
-  });
-
-  const { mutate: DeleteMutation, isPending } = useMutation({
-    mutationKey: ["delete-student"],
-    mutationFn: deleteStudent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["get-students"] });
-    },
   });
 
   const editClickHandler = (student: TableRow) => {
@@ -57,18 +53,17 @@ const StudentsTable = () => {
         <>
           <Button
             color="error"
-            disabled={isPending}
             onClick={() => {
-              DeleteMutation({ id: row.id, token: token! });
+              setIsDeleteModalOpen(true);
+
+              params.set("student-id", row.id);
+              navigate({ search: params.toString() });
             }}
           >
             <DeleteIcon />
           </Button>
 
-          <Button
-            disabled={isPending}
-            onClick={editClickHandler.bind(this, row)}
-          >
+          <Button onClick={editClickHandler.bind(this, row)}>
             <EditIcon />
           </Button>
         </>
@@ -78,6 +73,13 @@ const StudentsTable = () => {
 
   const toggleModalHandler = () => {
     setIsOpen((prev) => !prev);
+  };
+
+  const closeDeleteModal = () => {
+    params.delete("student-id");
+    navigate({ search: params.toString() });
+
+    setIsDeleteModalOpen(false);
   };
 
   let rows: TableRow[] = [];
@@ -93,7 +95,6 @@ const StudentsTable = () => {
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(search);
     const q = params.get("q");
 
     if (q) {
@@ -107,32 +108,36 @@ const StudentsTable = () => {
   }, [search]);
 
   return (
-    <Box height={500} width="90%" mx="auto">
-      <DataGrid
-        columns={columns}
-        loading={isLoading}
-        rows={filteredRows || rows || []}
-        pageSizeOptions={[5, 10, 20, 50, 100]}
-        sx={{
-          "& .MuiDataGrid-columnHeader": {
-            color: "#1F7BF4",
-            fontSize: "20px",
-            fontWeight: "bold",
-          },
+    <>
+      <Box height={500} width="90%" mx="auto">
+        <DataGrid
+          columns={columns}
+          loading={isLoading}
+          rows={filteredRows || rows || []}
+          pageSizeOptions={[5, 10, 20, 50, 100]}
+          sx={{
+            "& .MuiDataGrid-columnHeader": {
+              color: "#1F7BF4",
+              fontSize: "20px",
+              fontWeight: "bold",
+            },
 
-          "& .MuiDataGrid-columnHeader svg": {
-            color: "#1F7BF4",
-          },
-        }}
-      />
+            "& .MuiDataGrid-columnHeader svg": {
+              color: "#1F7BF4",
+            },
+          }}
+        />
 
-      <MainModal
-        type="EDIT"
-        isOpen={isOpen}
-        student={editStudent!}
-        onClose={toggleModalHandler}
-      />
-    </Box>
+        <MainModal
+          type="EDIT"
+          isOpen={isOpen}
+          student={editStudent!}
+          onClose={toggleModalHandler}
+        />
+      </Box>
+
+      <DeleteModal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
+    </>
   );
 };
 
