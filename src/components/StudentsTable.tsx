@@ -109,26 +109,3 @@ const StudentsTable = () => {
 };
 
 export default StudentsTable;
-
-// rowCount={3}
-// paginationMode="client"
-// paginationMeta={}
-
-// initialState={{
-//   columns: {
-//     columnVisibilityModel: {
-//       TEST: false,
-//     },
-//   },
-// }}
-
-// rows={
-//   data?.map((item) => ({
-//     ...item,
-//     grade: {
-//       text: item.grade.translations[0].name,
-//       id: item.grade.id,
-//       translations: item.grade.translations[0].name,
-//     },
-//   })) || []
-// }
