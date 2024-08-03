@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { useLocation } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -14,8 +15,10 @@ import { deleteStudent, getStudents } from "../lib/http";
 
 const StudentsTable = () => {
   const { token } = useSession();
+  const { search } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [editStudent, setEditStudent] = useState<TableRow | null>(null);
+  const [filteredRows, setFilteredRows] = useState<TableRow[] | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["get-students"],
@@ -79,7 +82,7 @@ const StudentsTable = () => {
 
   let rows: TableRow[] = [];
 
-  if (data) {
+  if (data && !isLoading) {
     rows = data.map((row) => ({
       ...row,
       gradeId: row.grade.id,
@@ -89,12 +92,26 @@ const StudentsTable = () => {
     }));
   }
 
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    const q = params.get("q");
+
+    if (q) {
+      const filteredRows = rows.filter(
+        (row) =>
+          row.lastName.toLowerCase().includes(q.toLowerCase()) ||
+          row.firstName.toLowerCase().includes(q.toLowerCase())
+      );
+      setFilteredRows(filteredRows);
+    }
+  }, [search]);
+
   return (
     <Box height={500} width="90%" mx="auto">
       <DataGrid
-        rows={rows}
         columns={columns}
         loading={isLoading}
+        rows={filteredRows || rows || []}
         pageSizeOptions={[5, 10, 20, 50, 100]}
         sx={{
           "& .MuiDataGrid-columnHeader": {
