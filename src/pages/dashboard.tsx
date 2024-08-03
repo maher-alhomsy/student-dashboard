@@ -1,6 +1,9 @@
+import { Box } from "@mui/material";
+
 import Navbar from "../components/Navbar";
 import Menubar from "../components/Menubar";
 import StudentsTable from "../components/StudentsTable";
+import FilterSection from "../components/FilterSection";
 
 const DashboardPage = () => {
   return (
@@ -8,7 +11,11 @@ const DashboardPage = () => {
       <Navbar />
       <div style={{ display: "flex", height: "100%" }}>
         <Menubar />
-        <StudentsTable />
+
+        <Box flexDirection="column" flexGrow={1} width={400}>
+          <FilterSection />
+          <StudentsTable />
+        </Box>
       </div>
     </div>
   );

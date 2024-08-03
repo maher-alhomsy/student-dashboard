@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
+import MainModal from "./MainModal";
 import { queryClient } from "../main";
 import { TransformedStudent } from "../types";
 import { useSession } from "../hooks/useSession";
@@ -12,7 +14,11 @@ import { deleteStudent, getStudents } from "../lib/http";
 
 const StudentsTable = () => {
   const { token } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
   const [row, setRow] = useState<TransformedStudent[]>([]);
+  const [editStudent, setEditStudent] = useState<TransformedStudent | null>(
+    null
+  );
 
   const { data, isLoading } = useQuery({
     queryKey: ["get-students"],
@@ -23,10 +29,15 @@ const StudentsTable = () => {
   const { mutate } = useMutation({
     mutationKey: ["delete-student"],
     mutationFn: deleteStudent,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["get-students"] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["get-students"] });
     },
   });
+
+  const editClickHandler = (student: TransformedStudent) => {
+    setEditStudent(student);
+    toggleModalHandler();
+  };
 
   const columns = [
     { field: "firstName", headerName: "First Name", width: 150 },
@@ -42,15 +53,19 @@ const StudentsTable = () => {
       field: "actions",
       headerName: "Actions",
       width: 150,
-      renderCell: ({ id }: TransformedStudent) => (
+      renderCell: ({ row }: GridRenderCellParams<TransformedStudent>) => (
         <>
           <Button
             color="error"
             onClick={() => {
-              mutate({ id, token: token! });
+              mutate({ id: row.id, token: token! });
             }}
           >
             <DeleteIcon />
+          </Button>
+
+          <Button onClick={editClickHandler.bind(this, row)}>
+            <EditIcon />
           </Button>
         </>
       ),
@@ -82,9 +97,19 @@ const StudentsTable = () => {
     setRow(rows);
   }, [data]);
 
+  const toggleModalHandler = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
     <>
       <DataGrid loading={isLoading} rows={row} columns={columns} />
+      <MainModal
+        type="EDIT"
+        isOpen={isOpen}
+        student={editStudent!}
+        onClose={toggleModalHandler}
+      />
     </>
   );
 };
