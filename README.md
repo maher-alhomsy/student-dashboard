@@ -1,30 +1,72 @@
-# React + TypeScript + Vite
+# Student Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a student dashboard built using React, Vite, and TypeScript. The application provides users with the ability to sign in and access the dashboard page where they can manage student data. The project utilizes Axios and TanStack React Query for data fetching, React Hook Form and Zod for form handling and validation, and Material-UI (MUI) for the UI components.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Authentication (Sign-In)
+- Dashboard to manage student data
+- CRUD operations for student data
+- Form validation using React Hook Form and Zod
+- Responsive UI using Material-UI
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React
+- Vite
+- TypeScript
+- Axios
+- TanStack React Query
+- React Hook Form
+- Zod
+- Material-UI
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+1. Clone the repository:
+
+```sh
+git clone git@github.com:maher-alhomsy/student-dashboard.git
+cd student-dashboard
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Install dependencies:
+
+```sh
+npm install
+```
+
+## Running The Application
+
+1. Start the development server:
+
+```sh
+npm run dev
+```
+
+## Usage
+
+### Authentication
+
+Users must sign in to access the dashboard. The authentication is handled via an authentication API.
+
+### Dashboard
+
+Once authenticated, users can:
+
+- View the list of students.
+- Add a new student.
+- Edit an existing student's details.
+- Delete a student.
+
+### Forms
+
+Forms are built using react-hook-form and validated using zod. Each form has the necessary validation rules to ensure the integrity of the data.
+
+### Data Fetching
+
+Data fetching is handled using axios and tanstack/react-query. The `useQuery` and `useMutation` hooks are used to fetch and manipulate data respectively.
+
+### Responsive UI
+
+The UI is built using Material-UI (MUI), ensuring that the application is fully responsive and accessible on various devices.
