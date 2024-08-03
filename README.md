@@ -26,7 +26,7 @@ This project is a student dashboard built using React, Vite, and TypeScript. The
 1. Clone the repository:
 
 ```sh
-git clone git@github.com:maher-alhomsy/student-dashboard.git
+git clone https://github.com/maher-alhomsy/student-dashboard.git
 cd student-dashboard
 ```
 
