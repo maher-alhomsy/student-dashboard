@@ -40,11 +40,11 @@ const StudentsTable = () => {
     { field: "firstName", headerName: "First Name", width: 150 },
     { field: "lastName", headerName: "Last Name", width: 150 },
     { field: "birthDate", headerName: "Date of Birth", width: 150 },
-    { field: "grade", headerName: "Educational Level", width: 150 },
+    { field: "grade", headerName: "Educational Level", width: 200 },
     { field: "gender", headerName: "Gender", width: 100 },
     { field: "country", headerName: "Country", width: 100 },
     { field: "city", headerName: "City", width: 100 },
-    { field: "phone", headerName: "Mobile Number", width: 150 },
+    { field: "phone", headerName: "Mobile Number", width: 200 },
     { field: "remarks", headerName: "Notes", width: 200 },
     {
       field: "actions",
@@ -98,14 +98,13 @@ const StudentsTable = () => {
         pageSizeOptions={[5, 10, 20, 50, 100]}
         sx={{
           "& .MuiDataGrid-columnHeader": {
-            color: "white",
-            fontWeight: "bold",
+            color: "#1F7BF4",
             fontSize: "20px",
-            backgroundColor: "#1F7BF4",
+            fontWeight: "bold",
           },
 
           "& .MuiDataGrid-columnHeader svg": {
-            color: "white",
+            color: "#1F7BF4",
           },
         }}
       />
@@ -121,4 +120,3 @@ const StudentsTable = () => {
 };
 
 export default StudentsTable;
-// FIX FORK ISSUE
