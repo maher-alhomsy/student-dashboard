@@ -108,6 +108,10 @@ const StudentsTable = () => {
           row.firstName.toLowerCase().includes(q.toLowerCase())
       );
       setFilteredRows(filteredRows);
+    } else {
+      params.delete("q");
+      navigate({ search: params.toString() });
+      setFilteredRows(null);
     }
   }, [search]);
 
