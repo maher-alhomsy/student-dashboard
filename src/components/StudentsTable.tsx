@@ -1,21 +1,21 @@
 import { useState } from "react";
 
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { Student } from "../types";
 import MainModal from "./MainModal";
 import { queryClient } from "../main";
+import type { TableRow } from "../types";
 import { useSession } from "../hooks/useSession";
 import { deleteStudent, getStudents } from "../lib/http";
 
 const StudentsTable = () => {
   const { token } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const [editStudent, setEditStudent] = useState<Student | null>(null);
+  const [editStudent, setEditStudent] = useState<TableRow | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["get-students"],
@@ -23,7 +23,7 @@ const StudentsTable = () => {
     enabled: token !== null,
   });
 
-  const { mutate } = useMutation({
+  const { mutate: DeleteMutation, isPending } = useMutation({
     mutationKey: ["delete-student"],
     mutationFn: deleteStudent,
     onSuccess: () => {
@@ -31,7 +31,7 @@ const StudentsTable = () => {
     },
   });
 
-  const editClickHandler = (student: Student) => {
+  const editClickHandler = (student: TableRow) => {
     setEditStudent(student);
     toggleModalHandler();
   };
@@ -50,18 +50,22 @@ const StudentsTable = () => {
       field: "actions",
       headerName: "Actions",
       width: 150,
-      renderCell: ({ row }: { row: Student }) => (
+      renderCell: ({ row }: { row: TableRow }) => (
         <>
           <Button
             color="error"
+            disabled={isPending}
             onClick={() => {
-              mutate({ id: row.id, token: token! });
+              DeleteMutation({ id: row.id, token: token! });
             }}
           >
             <DeleteIcon />
           </Button>
 
-          <Button onClick={editClickHandler.bind(this, row)}>
+          <Button
+            disabled={isPending}
+            onClick={editClickHandler.bind(this, row)}
+          >
             <EditIcon />
           </Button>
         </>
@@ -73,16 +77,25 @@ const StudentsTable = () => {
     setIsOpen((prev) => !prev);
   };
 
+  let rows: TableRow[] = [];
+
+  if (data) {
+    rows = data.map((row) => ({
+      ...row,
+      gradeId: row.grade.id,
+      genderId: row.gender.id,
+      grade: row.grade.translations[0].name,
+      gender: row.gender.translations[0].name,
+    }));
+  }
+
   return (
-    <>
+    <Box height={500} width="90%" mx="auto">
       <DataGrid
+        rows={rows}
         columns={columns}
         loading={isLoading}
-        // rowCount={3}
-        // paginationMode="client"
-        // paginationMeta={}
         pageSizeOptions={[5, 10, 20, 50, 100]}
-        rows={data?.map((item) => item) || []}
       />
 
       <MainModal
@@ -91,8 +104,31 @@ const StudentsTable = () => {
         student={editStudent!}
         onClose={toggleModalHandler}
       />
-    </>
+    </Box>
   );
 };
 
 export default StudentsTable;
+
+// rowCount={3}
+// paginationMode="client"
+// paginationMeta={}
+
+// initialState={{
+//   columns: {
+//     columnVisibilityModel: {
+//       TEST: false,
+//     },
+//   },
+// }}
+
+// rows={
+//   data?.map((item) => ({
+//     ...item,
+//     grade: {
+//       text: item.grade.translations[0].name,
+//       id: item.grade.id,
+//       translations: item.grade.translations[0].name,
+//     },
+//   })) || []
+// }

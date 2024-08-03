@@ -16,14 +16,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { queryClient } from "../main";
 import { useSession } from "../hooks/useSession";
 import { addStudent, EditStudent } from "../lib/http";
-import { Gender, Grade, Student as S } from "../types";
+import type { Gender, Grade, TableRow } from "../types";
 import { studentScheme, StudentSchemeData } from "../lib/validator";
 
 type Props = {
   isOpen: boolean;
+  student?: TableRow;
   onClose: () => void;
   type: "EDIT" | "CREATE";
-  student?: S;
 };
 
 const INITIAL_VALUE = {
@@ -54,8 +54,8 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
       type === "EDIT" && student
         ? {
             ...student,
-            grade: student.grade.id,
-            gender: student.gender.id,
+            grade: student.gradeId,
+            gender: student.genderId,
             birthDate: student.birthDate.slice(0, 10),
           }
         : INITIAL_VALUE,
