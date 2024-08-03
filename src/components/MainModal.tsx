@@ -22,6 +22,18 @@ type Props = {
   student?: TransformedStudent;
 };
 
+const INITIAL_VALUE = {
+  city: "",
+  grade: "",
+  phone: "",
+  gender: "",
+  country: "",
+  remarks: "",
+  lastName: "",
+  firstName: "",
+  birthDate: "",
+};
+
 const MainModal = ({ isOpen, onClose, type, student }: Props) => {
   const {
     control,
@@ -29,6 +41,16 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
     formState: { errors },
   } = useForm<Student>({
     resolver: zodResolver(studentScheme),
+    defaultValues:
+      type === "EDIT"
+        ? {
+            ...student,
+            remarks: student?.notes,
+            phone: student?.mobileNumber,
+            grade: student?.educationalLevel,
+            birthDate: student?.dateOfBirth.slice(0, 10),
+          }
+        : INITIAL_VALUE,
   });
 
   const submitHandler = (values: Student) => {
@@ -59,18 +81,18 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             control={control}
             name="firstName"
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <TextField
                 fullWidth
-                name={name}
-                value={value}
+                {...field}
                 id="firstName"
                 margin="normal"
                 label="First Name"
-                onChange={onChange}
                 error={Boolean(errors.firstName)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={type === "EDIT" ? student?.firstName : value}
+                defaultValue={
+                  type === "EDIT" ? student?.firstName : field.value
+                }
               />
             )}
           />
@@ -78,18 +100,16 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             control={control}
             name="lastName"
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <TextField
                 fullWidth
-                name={name}
-                value={value}
+                {...field}
                 id="lastName"
                 margin="normal"
                 label="Last Name"
-                onChange={onChange}
                 error={Boolean(errors.lastName)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={type === "EDIT" ? student?.lastName : value}
+                defaultValue={type === "EDIT" ? student?.lastName : field.value}
               />
             )}
           />
@@ -99,21 +119,21 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             control={control}
             name="birthDate"
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <TextField
                 fullWidth
-                name={name}
+                {...field}
                 type="date"
-                value={value}
                 margin="normal"
                 id="dateOfBirth"
-                onChange={onChange}
                 label="Date of Birth"
                 error={Boolean(errors.birthDate)}
                 InputLabelProps={{ shrink: true }}
                 sx={{ backgroundColor: "#F5F5F5" }}
                 defaultValue={
-                  type === "EDIT" ? student?.dateOfBirth.slice(0, 10) : value
+                  type === "CREATE"
+                    ? field.value
+                    : student?.dateOfBirth.slice(0, 10)
                 }
               />
             )}
@@ -122,21 +142,19 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             name="grade"
             control={control}
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <FormControl fullWidth margin="normal">
                 <InputLabel id="educational-label">
                   Educational Level
                 </InputLabel>
 
                 <Select
-                  name={name}
-                  value={value}
-                  onChange={onChange}
+                  {...field}
                   labelId="educational-label"
                   error={Boolean(errors.grade)}
                   sx={{ backgroundColor: "#F5F5F5" }}
                   defaultValue={
-                    type === "EDIT" ? student?.educationalLevel : value
+                    type === "EDIT" ? student?.educationalLevel : field.value
                   }
                 >
                   <MenuItem value="Grade 1">Grade 1</MenuItem>
@@ -154,18 +172,18 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             name="country"
             control={control}
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <FormControl fullWidth margin="normal">
                 <InputLabel id="country-label">Country</InputLabel>
                 <Select
                   id="country"
-                  name={name}
-                  value={value}
-                  onChange={onChange}
+                  {...field}
                   labelId="country-label"
                   error={Boolean(errors.country)}
                   sx={{ backgroundColor: "#F5F5F5" }}
-                  defaultValue={type === "EDIT" ? student?.country : value}
+                  defaultValue={
+                    type === "EDIT" ? student?.country : field.value
+                  }
                 >
                   <MenuItem value="USA">USA</MenuItem>
                   <MenuItem value="Syria">Syria</MenuItem>
@@ -179,18 +197,16 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             control={control}
             name="city"
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <TextField
                 fullWidth
                 id="city"
-                name={name}
-                value={value}
+                {...field}
                 label="City"
                 margin="normal"
-                onChange={onChange}
                 error={Boolean(errors.city)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={type === "EDIT" ? student?.city : value}
+                defaultValue={type === "EDIT" ? student?.city : field.value}
               />
             )}
           />
@@ -200,18 +216,18 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             control={control}
             name="phone"
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <TextField
                 fullWidth
                 id="phone"
-                name={name}
-                value={value}
+                {...field}
                 label="Mobile"
                 margin="normal"
-                onChange={onChange}
                 error={Boolean(errors.phone)}
                 sx={{ backgroundColor: "#F5F5F5" }}
-                defaultValue={type === "EDIT" ? student?.mobileNumber : value}
+                defaultValue={
+                  type === "EDIT" ? student?.mobileNumber : field.value
+                }
               />
             )}
           />
@@ -219,18 +235,16 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
           <Controller
             control={control}
             name="gender"
-            render={({ field: { name, value, onChange } }) => (
+            render={({ field }) => (
               <FormControl fullWidth margin="normal">
                 <InputLabel id="gender-label">Gender</InputLabel>
                 <Select
                   id="gender"
-                  name={name}
-                  value={value}
-                  onChange={onChange}
+                  {...field}
                   labelId="gender-label"
                   sx={{ background: "#F5F5F5" }}
                   error={Boolean(errors.gender)}
-                  defaultValue={type === "EDIT" ? student?.gender : value}
+                  defaultValue={type === "EDIT" ? student?.gender : field.value}
                 >
                   <MenuItem value="Female">Female</MenuItem>
                   <MenuItem value="Male">Male</MenuItem>
@@ -243,18 +257,16 @@ const MainModal = ({ isOpen, onClose, type, student }: Props) => {
         <Controller
           control={control}
           name="remarks"
-          render={({ field: { name, value, onChange } }) => (
+          render={({ field }) => (
             <TextField
               fullWidth
               multiline
               id="note"
-              name={name}
-              value={value}
+              {...field}
               label="Note"
               margin="normal"
-              onChange={onChange}
               sx={{ backgroundColor: "#F5F5F5" }}
-              defaultValue={type === "EDIT" ? student?.notes : value}
+              defaultValue={type === "EDIT" ? student?.notes : field.value}
               inputProps={{ style: { height: 100, textAlign: "start" } }}
             />
           )}
