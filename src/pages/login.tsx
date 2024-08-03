@@ -172,6 +172,7 @@ const LoginPage = () => {
 
             {isError && (
               <p style={{ fontWeight: "bold", color: "red" }}>
+                {/* @ts-ignore */}
                 {error.response.data}
               </p>
             )}
