@@ -14,12 +14,17 @@ function Navbar() {
   return (
     <AppBar
       position="static"
-      sx={{ mb: 3, boxShadow: "none", height: 60, backgroundColor: "white" }}
+      sx={{
+        mb: 3,
+        boxShadow: "none",
+        height: { xs: 50, sm: 60 },
+        backgroundColor: "white",
+      }}
     >
       <Toolbar disableGutters>
         <Box
-          height={60}
-          width={200}
+          height={{ xs: 50, sm: 60 }}
+          width={{ xs: 50, sm: 200 }}
           maxWidth={200}
           display="flex"
           alignItems="center"
@@ -75,7 +80,7 @@ function Navbar() {
 
           <Select
             value={language}
-            sx={{ borderRadius: 10, width: 150, textAlign: "center" }}
+            sx={{ borderRadius: 10, textAlign: "center" }}
             onChange={(e) => onChangeLanguage(e.target.value as 0 | 1)}
           >
             <MenuItem value={0}>English</MenuItem>

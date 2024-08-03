@@ -17,10 +17,10 @@ const Menubar = () => {
     <>
       <Container
         sx={{
-          width: 250,
           height: "100%",
           display: "flex",
           flexDirection: "column",
+          width: { xs: 50, sm: 200 },
         }}
         style={{ paddingLeft: 0, paddingRight: 0 }}
       >
@@ -50,11 +50,12 @@ const Menubar = () => {
         </Box>
 
         <Box
-          pl={3}
           mb={2}
           gap={1}
           display="flex"
           alignItems="center"
+          pl={{ xs: 0, sm: 3 }}
+          justifyContent="center"
           sx={{ cursor: "pointer" }}
           onClick={() => setIsOpen(true)}
         >
