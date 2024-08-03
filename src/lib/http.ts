@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Student } from "../types";
+import { Grade, Student } from "../types";
 
 export const loginEvent = async ({
   userName,
@@ -36,4 +36,14 @@ export const deleteStudent = async ({
     },
   });
   return data;
+};
+
+export const getAllGrades = async (token: string) => {
+  const { data } = await axios.get("/Settings/GetAllGrades", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data as Grade[];
 };

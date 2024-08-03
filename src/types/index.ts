@@ -21,7 +21,7 @@ type Translation = {
   cultureCode: 0 | 1;
 };
 
-type Grade = {
+export type Grade = {
   id: string;
   translations: Translation[];
 };
