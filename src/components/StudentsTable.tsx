@@ -96,6 +96,21 @@ const StudentsTable = () => {
         columns={columns}
         loading={isLoading}
         pageSizeOptions={[5, 10, 20, 50, 100]}
+        sx={{
+          "& .MuiDataGrid-columnHeader": {
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "20px",
+            backgroundColor: "#1F7BF4",
+          },
+
+          "& .MuiDataGrid-columnHeader svg": {
+            color: "white",
+            // fontWeight: "bold",
+            // fontSize: "20px",
+            // backgroundColor: "#1F7BF4",
+          },
+        }}
       />
 
       <MainModal
