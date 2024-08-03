@@ -1,9 +1,16 @@
 import { useState } from "react";
 
-import AddIcon from "@mui/icons-material/Add";
-import { Box, Button, Typography } from "@mui/material";
-
+import {
+  Box,
+  Button,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import MainModal from "./MainModal";
+import AddIcon from "@mui/icons-material/Add";
+import TuneIcon from "@mui/icons-material/Tune";
+import SearchIcon from "@mui/icons-material/Search";
 
 const FilterSection = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +20,7 @@ const FilterSection = () => {
   };
 
   return (
-    <>
+    <Box boxSizing="border-box" px={11}>
       <Box
         width="100%"
         display="flex"
@@ -33,8 +40,27 @@ const FilterSection = () => {
         </Button>
       </Box>
 
+      <Box display="flex" gap={1} alignItems="center" mb={3}>
+        <TuneIcon width={20} color="primary" />
+        <Typography component="h5" variant="h6" color="#1F7BF4">
+          Filter By:
+        </Typography>
+
+        <TextField
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ backgroundColor: "#F5F5F5", width: 300 }}
+          placeholder="Search by first name, last name"
+        />
+      </Box>
+
       <MainModal type="CREATE" isOpen={isOpen} onClose={toggleModalHandler} />
-    </>
+    </Box>
   );
 };
 
