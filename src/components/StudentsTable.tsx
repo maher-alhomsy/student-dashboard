@@ -78,6 +78,10 @@ const StudentsTable = () => {
       <DataGrid
         columns={columns}
         loading={isLoading}
+        // rowCount={3}
+        // paginationMode="client"
+        // paginationMeta={}
+        pageSizeOptions={[5, 10, 20, 50, 100]}
         rows={data?.map((item) => item) || []}
       />
 
