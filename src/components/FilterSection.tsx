@@ -3,15 +3,16 @@ import { useState } from "react";
 import {
   Box,
   Button,
-  InputAdornment,
   TextField,
   Typography,
+  InputAdornment,
 } from "@mui/material";
-import MainModal from "./MainModal";
 import AddIcon from "@mui/icons-material/Add";
 import TuneIcon from "@mui/icons-material/Tune";
 import SearchIcon from "@mui/icons-material/Search";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import MainModal from "./MainModal";
 
 const FilterSection = () => {
   const navigate = useNavigate();
@@ -32,14 +33,15 @@ const FilterSection = () => {
   };
 
   return (
-    <Box boxSizing="border-box" px={11}>
+    <Box boxSizing="border-box" px={{ xs: 1.5, sm: 10 }}>
       <Box
+        mb={3}
         width="100%"
         display="flex"
         alignItems="center"
         justifyContent="space-between"
       >
-        <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+        <Typography component="h1" variant="h5">
           Students' Data
         </Typography>
 
@@ -53,8 +55,17 @@ const FilterSection = () => {
       </Box>
 
       <Box display="flex" gap={1} alignItems="center" mb={3}>
-        <TuneIcon width={20} color="primary" />
-        <Typography component="h5" variant="h6" color="#1F7BF4">
+        <TuneIcon
+          width={20}
+          color="primary"
+          sx={{ display: { xs: "none", sm: "inline" } }}
+        />
+        <Typography
+          sx={{ display: { xs: "none", sm: "inline" } }}
+          variant="h6"
+          component="h5"
+          color="#1F7BF4"
+        >
           Filter By:
         </Typography>
 
@@ -66,7 +77,11 @@ const FilterSection = () => {
                 <SearchIcon />
               </InputAdornment>
             ),
-            style: { borderRadius: 20, backgroundColor: "#F5F5F5", width: 300 },
+            style: {
+              borderRadius: 20,
+              backgroundColor: "#F5F5F5",
+            },
+            sx: { width: { xs: 200, md: 300 } },
           }}
           placeholder="Search by first name, last name"
         />
